@@ -12,17 +12,39 @@
   --font-mono: 'Space Mono', monospace;
 }
 
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
+html {
   background-color: var(--bg-void);
   color: #d1d5db;
   font-family: var(--font-mono);
-  overflow: hidden;
+  scrollbar-width: none; /* Firefox hide scrollbar */
+  -ms-overflow-style: none; /* IE/Edge hide scrollbar */
+}
+
+/* Chrome, Safari and Opera hide scrollbar */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-void);
   cursor: none;
   user-select: none;
+}
+
+/* Lenis Recommended Root Styles */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }
 
 /* Authentic CRT Interlaced Vertical Phosphor Lines */
@@ -39,7 +61,7 @@ html, body {
   background-size: 100% 3px, 3px 100%;
 }
 
-/* Premium Non-Destructive Chromatic Glitch (No clipping/cutting) */
+/* Premium Non-Destructive Chromatic Glitch */
 @keyframes chromaticGlitchSmooth {
   0%, 86%, 100% {
     transform: translate(0, 0) scale(1);
