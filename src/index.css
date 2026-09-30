@@ -1,39 +1,76 @@
 @import "tailwindcss";
 
 :root {
-  --bg-void: #030508;
+  --bg-void: #050608;
   --bg-surface: #070a12;
   --accent-cyan: #00f0ff;
   --accent-violet: #8b5cf6;
+  --accent-purple: #c084fc;
   --accent-amber: #ffb800;
-  --text-primary: #f8fafc;
-  --text-muted: #64748b;
+  --accent-rose: #f43f5e;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-mono: 'Space Mono', monospace;
 }
 
-html {
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   background-color: var(--bg-void);
-  color: var(--text-primary);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  overflow-x: hidden;
+  color: #d1d5db;
+  font-family: var(--font-mono);
+  overflow: hidden;
+  cursor: none;
+  user-select: none;
 }
 
-/* Custom Scrollbar for Sleek Tech-Brutalism */
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #030508;
-}
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #8b5cf6;
+/* Authentic CRT Interlaced Vertical Phosphor Lines */
+.crt-matrix {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.4) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.08),
+    rgba(0, 255, 0, 0.02),
+    rgba(0, 0, 255, 0.08)
+  );
+  background-size: 100% 3px, 3px 100%;
 }
 
-/* Subtle Tech Noise Overlay */
-.bg-noise {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
-  background-size: 24px 24px;
+/* Premium Non-Destructive Chromatic Glitch (No clipping/cutting) */
+@keyframes chromaticGlitchSmooth {
+  0%, 86%, 100% {
+    transform: translate(0, 0) scale(1);
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  87% {
+    transform: translate(-3px, 1px);
+    filter: drop-shadow(4px 0 rgba(239, 68, 68, 0.85)) drop-shadow(-4px 0 rgba(6, 182, 212, 0.85));
+  }
+  89% {
+    transform: translate(3px, -1px);
+    filter: drop-shadow(-3px 0 rgba(192, 132, 252, 0.9)) drop-shadow(3px 0 rgba(34, 197, 94, 0.9));
+  }
+  91% {
+    transform: translate(-1.5px, 0.5px);
+    filter: drop-shadow(2px 0 rgba(239, 68, 68, 0.7));
+  }
+  93% {
+    transform: translate(0, 0);
+    filter: drop-shadow(0 0 0 transparent);
+  }
+}
+
+.chromatic-glitch {
+  animation: chromaticGlitchSmooth 4s infinite ease-in-out;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
 }
