@@ -5,17 +5,17 @@ import RadarCursor from './components/RadarCursor';
 import Hero from './components/Hero';
 import Manifesto from './components/Manifesto';
 import Works from './components/Works';
+import Contact from './components/Contact';
 import MenuOverlay from './components/MenuOverlay';
 import { sound } from './utils/soundEngine';
 
 export default function App() {
   const [loadingDone, setLoadingDone] = useState(false);
-  const [currentStage, setCurrentStage] = useState(0); // 0: Hero, 1: Manifesto, 2: Works
+  const [currentStage, setCurrentStage] = useState(0); // 0: Hero, 1: Manifesto, 2: Works, 3: Contact
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [soundOn, setSoundOn] = useState(true);
   const isTransitioning = useRef(false);
 
-  // Sync sound engine state
   const handleToggleSound = () => {
     const nextState = !soundOn;
     setSoundOn(nextState);
@@ -25,7 +25,7 @@ export default function App() {
 
   const goToStage = (targetStage) => {
     if (isTransitioning.current || targetStage === currentStage) return;
-    if (targetStage < 0 || targetStage > 2) return;
+    if (targetStage < 0 || targetStage > 3) return;
     
     isTransitioning.current = true;
     sound.playStageTransition();
@@ -47,18 +47,16 @@ export default function App() {
   };
 
   useEffect(() => {
-    // 1. Mouse Wheel Navigation
     const handleWheel = (e) => {
       if (!loadingDone || isTransitioning.current || isMenuOpen) return;
       const threshold = 35;
-      if (e.deltaY > threshold && currentStage < 2) {
+      if (e.deltaY > threshold && currentStage < 3) {
         goToStage(currentStage + 1);
       } else if (e.deltaY < -threshold && currentStage > 0) {
         goToStage(currentStage - 1);
       }
     };
 
-    // 2. Keyboard Navigation
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         handleCloseMenu();
@@ -68,14 +66,13 @@ export default function App() {
 
       if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
         e.preventDefault();
-        if (currentStage < 2) goToStage(currentStage + 1);
+        if (currentStage < 3) goToStage(currentStage + 1);
       } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
         e.preventDefault();
         if (currentStage > 0) goToStage(currentStage - 1);
       }
     };
 
-    // 3. Touch Gestures for Mobile
     let touchStartY = 0;
     const handleTouchStart = (e) => {
       touchStartY = e.touches[0].clientY;
@@ -83,7 +80,7 @@ export default function App() {
     const handleTouchEnd = (e) => {
       if (!loadingDone || isTransitioning.current || isMenuOpen) return;
       const deltaY = touchStartY - e.changedTouches[0].clientY;
-      if (deltaY > 50 && currentStage < 2) {
+      if (deltaY > 50 && currentStage < 3) {
         goToStage(currentStage + 1);
       } else if (deltaY < -50 && currentStage > 0) {
         goToStage(currentStage - 1);
@@ -126,7 +123,7 @@ export default function App() {
         onToggleSound={handleToggleSound}
       />
 
-      {/* 4. 3-Stage Navigation Deck */}
+      {/* 4. 4-Stage Navigation Deck */}
       <AnimatePresence mode="wait">
         {currentStage === 0 && (
           <motion.div
@@ -178,11 +175,27 @@ export default function App() {
             />
           </motion.div>
         )}
+
+        {currentStage === 3 && (
+          <motion.div
+            key="stage-contact"
+            className="absolute inset-0 h-full w-full"
+            initial={{ opacity: 0, y: 40, filter: 'blur(10px)', scale: 1.02 }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }}
+            exit={{ opacity: 0, y: -20, filter: 'blur(8px)' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <Contact 
+              onBack={() => goToStage(2)} 
+              onOpenMenu={handleOpenMenu} 
+            />
+          </motion.div>
+        )}
       </AnimatePresence>
 
-      {/* Persistent 3-Stage Indicator Stepper */}
+      {/* Persistent 4-Stage Indicator Stepper */}
       <div className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2.5 pointer-events-none">
-        {[0, 1, 2].map((stg) => (
+        {[0, 1, 2, 3].map((stg) => (
           <button
             key={stg}
             onClick={() => {

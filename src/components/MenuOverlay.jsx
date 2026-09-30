@@ -16,13 +16,12 @@ export default function MenuOverlay({
   const STAGES = [
     { id: 0, title: "HERO - IDENTITY", desc: "Front-end engineering persona, geo coordinates & radar matrix" },
     { id: 1, title: "MANIFESTO - MINDSET", desc: "Core philosophies, inspirational axioms & drive" },
-    { id: 2, title: "WORKS - ARCHIVE", desc: "9 live verified production platforms (Kinesis, Technova, AlQuran...)" }
+    { id: 2, title: "WORKS - ARCHIVE", desc: "9 live verified production platforms (Kinesis, Technova, AlQuran...)" },
+    { id: 3, title: "TRANSMISSION - CONTACT", desc: "Direct communication terminal, email protocol & encrypted signal dispatch" }
   ];
 
   const SOCIALS = [
-    { label: "GITHUB", link: "https://github.com" },
-    { label: "LINKEDIN", link: "https://linkedin.com" },
-    { label: "TWITTER / X", link: "https://x.com" },
+    { label: "GITHUB", link: "https://github.com/MuhammadSaim54" },
     { label: "DIRECT EMAIL", link: "mailto:saim@example.com" }
   ];
 
