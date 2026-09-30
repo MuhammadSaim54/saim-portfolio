@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ChevronLeft, ChevronRight, CornerDownLeft, Eye, Terminal } from 'lucide-react';
+import { sound } from '../utils/soundEngine';
 
 const PROJECTS = [
   {
@@ -129,11 +130,18 @@ export default function Works({ onBack, onOpenMenu }) {
   const project = PROJECTS[activeIdx];
 
   const handleNext = () => {
+    sound.playChirp();
     setActiveIdx((prev) => (prev + 1) % PROJECTS.length);
   };
 
   const handlePrev = () => {
+    sound.playChirp();
     setActiveIdx((prev) => (prev - 1 + PROJECTS.length) % PROJECTS.length);
+  };
+
+  const handleSelectDirect = (idx) => {
+    sound.playChirp();
+    setActiveIdx(idx);
   };
 
   useEffect(() => {
@@ -186,7 +194,10 @@ export default function Works({ onBack, onOpenMenu }) {
       <div className="relative z-20 flex items-center justify-between gap-2 font-mono-tech uppercase tracking-widest text-slate-500 pb-2 flex-shrink-0 text-[10px] sm:text-xs 2xl:text-sm">
         <div className="flex items-center gap-2 text-white">
           <button 
-            onClick={onBack}
+            onClick={() => {
+              sound.playClick();
+              onBack();
+            }}
             className="flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 transition-colors cursor-none"
           >
             <CornerDownLeft className="w-3.5 h-3.5" />
@@ -200,7 +211,7 @@ export default function Works({ onBack, onOpenMenu }) {
 
         <div className="hidden lg:block">
           <div>LAHORE, PK</div>
-          <div className="text-white">{pktTime || '11:32'} PKT</div>
+          <div className="text-white">{pktTime || '11:45'} PKT</div>
         </div>
 
         <div className="hidden sm:block text-slate-500">
@@ -320,6 +331,7 @@ export default function Works({ onBack, onOpenMenu }) {
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => sound.playClick()}
                 className="inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 bg-white text-black font-mono-tech text-[9px] sm:text-[10px] font-bold tracking-widest uppercase hover:bg-emerald-400 hover:text-black transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] cursor-none"
               >
                 <Eye className="w-3 h-3" />
@@ -330,6 +342,7 @@ export default function Works({ onBack, onOpenMenu }) {
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => sound.playClick()}
                 className="inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:py-2.5 border border-white/20 text-white font-mono-tech text-[9px] sm:text-[10px] tracking-widest uppercase hover:border-emerald-400 hover:text-emerald-400 hover:bg-emerald-400/5 transition-all cursor-none"
               >
                 <span className="truncate">INSPECT ARCH</span>
@@ -338,12 +351,12 @@ export default function Works({ onBack, onOpenMenu }) {
             </div>
           </div>
 
-          {/* Micro-stepper Dots (hidden on tiny screens, visible on tablet+) */}
+          {/* Micro-stepper Dots */}
           <div className="hidden sm:flex items-center gap-1.5 flex-wrap">
             {PROJECTS.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setActiveIdx(i)}
+                onClick={() => handleSelectDirect(i)}
                 aria-label={`Go to project ${i + 1}`}
                 className={`h-1.5 rounded-full transition-all duration-300 cursor-none ${
                   i === activeIdx ? 'w-6 bg-emerald-400' : 'w-1.5 bg-white/20 hover:bg-white/50'

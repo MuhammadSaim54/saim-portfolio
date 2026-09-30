@@ -1,8 +1,16 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Volume2, VolumeX, ArrowUpRight, Radio, ExternalLink } from 'lucide-react';
+import { sound } from '../utils/soundEngine';
 
-export default function MenuOverlay({ isOpen, onClose, onSelectStage, currentStage, soundOn, setSoundOn }) {
+export default function MenuOverlay({
+  isOpen,
+  onClose,
+  onSelectStage,
+  currentStage,
+  soundOn,
+  onToggleSound
+}) {
   if (!isOpen) return null;
 
   const STAGES = [
@@ -24,6 +32,7 @@ export default function MenuOverlay({ isOpen, onClose, onSelectStage, currentSta
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
         className="fixed inset-0 z-[120] bg-[#050608]/95 backdrop-blur-xl flex flex-col justify-between p-4 sm:p-8 lg:p-12 select-none cursor-none"
       >
         {/* Top Header */}
@@ -37,15 +46,24 @@ export default function MenuOverlay({ isOpen, onClose, onSelectStage, currentSta
 
           <div className="flex items-center gap-4">
             <button
-              onClick={() => setSoundOn(!soundOn)}
-              className="flex items-center gap-2 px-3 py-1 border border-white/20 hover:border-emerald-400 text-white font-mono-tech text-[10px] uppercase cursor-none"
+              onClick={() => {
+                onToggleSound();
+              }}
+              className="flex items-center gap-2 px-3 py-1 border border-white/20 hover:border-emerald-400 text-white font-mono-tech text-[10px] uppercase cursor-none transition-colors"
             >
-              {soundOn ? <Volume2 className="w-3.5 h-3.5 text-emerald-400" /> : <VolumeX className="w-3.5 h-3.5 text-rose-500" />}
+              {soundOn ? (
+                <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+              ) : (
+                <VolumeX className="w-3.5 h-3.5 text-rose-500" />
+              )}
               <span>SOUND: {soundOn ? 'ON' : 'OFF'}</span>
             </button>
 
             <button
-              onClick={onClose}
+              onClick={() => {
+                sound.playClick();
+                onClose();
+              }}
               className="p-1.5 border border-white/20 hover:border-rose-500 text-white hover:text-rose-500 transition-colors cursor-none"
             >
               <X className="w-5 h-5" />
@@ -64,6 +82,7 @@ export default function MenuOverlay({ isOpen, onClose, onSelectStage, currentSta
               <div
                 key={stg.id}
                 onClick={() => {
+                  sound.playStageTransition();
                   onSelectStage(stg.id);
                   onClose();
                 }}
@@ -102,6 +121,7 @@ export default function MenuOverlay({ isOpen, onClose, onSelectStage, currentSta
                     href={soc.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => sound.playClick()}
                     className="p-2.5 border border-white/[0.08] hover:border-emerald-400 text-slate-300 hover:text-white font-mono-tech text-[10px] tracking-wider uppercase transition-colors flex items-center justify-between cursor-none"
                   >
                     <span>{soc.label}</span>

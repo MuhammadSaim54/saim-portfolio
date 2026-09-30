@@ -6,6 +6,7 @@ import Hero from './components/Hero';
 import Manifesto from './components/Manifesto';
 import Works from './components/Works';
 import MenuOverlay from './components/MenuOverlay';
+import { sound } from './utils/soundEngine';
 
 export default function App() {
   const [loadingDone, setLoadingDone] = useState(false);
@@ -14,14 +15,35 @@ export default function App() {
   const [soundOn, setSoundOn] = useState(true);
   const isTransitioning = useRef(false);
 
+  // Sync sound engine state
+  const handleToggleSound = () => {
+    const nextState = !soundOn;
+    setSoundOn(nextState);
+    sound.toggle(nextState);
+    if (nextState) sound.playClick();
+  };
+
   const goToStage = (targetStage) => {
     if (isTransitioning.current || targetStage === currentStage) return;
     if (targetStage < 0 || targetStage > 2) return;
+    
     isTransitioning.current = true;
+    sound.playStageTransition();
     setCurrentStage(targetStage);
+    
     setTimeout(() => {
       isTransitioning.current = false;
     }, 900);
+  };
+
+  const handleOpenMenu = () => {
+    sound.playChirp();
+    setIsMenuOpen(true);
+  };
+
+  const handleCloseMenu = () => {
+    sound.playClick();
+    setIsMenuOpen(false);
   };
 
   useEffect(() => {
@@ -39,7 +61,7 @@ export default function App() {
     // 2. Keyboard Navigation
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        setIsMenuOpen(false);
+        handleCloseMenu();
         return;
       }
       if (!loadingDone || isTransitioning.current || isMenuOpen) return;
@@ -88,17 +110,20 @@ export default function App() {
 
       {/* 2. Acid Green Pixel Mosaic Dissolve Loader */}
       {!loadingDone && (
-        <PixelLoader onComplete={() => setLoadingDone(true)} />
+        <PixelLoader onComplete={() => {
+          sound.playChirp();
+          setLoadingDone(true);
+        }} />
       )}
 
       {/* 3. Tactical Fullscreen Menu Overlay */}
       <MenuOverlay
         isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
+        onClose={handleCloseMenu}
         onSelectStage={goToStage}
         currentStage={currentStage}
         soundOn={soundOn}
-        setSoundOn={setSoundOn}
+        onToggleSound={handleToggleSound}
       />
 
       {/* 4. 3-Stage Navigation Deck */}
@@ -112,7 +137,12 @@ export default function App() {
             exit={{ opacity: 0, y: -40, filter: 'blur(10px)', scale: 0.98 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Hero onNavigate={() => goToStage(1)} onOpenMenu={() => setIsMenuOpen(true)} />
+            <Hero 
+              onNavigate={() => goToStage(1)} 
+              onOpenMenu={handleOpenMenu} 
+              soundOn={soundOn}
+              onToggleSound={handleToggleSound}
+            />
           </motion.div>
         )}
 
@@ -125,7 +155,11 @@ export default function App() {
             exit={{ opacity: 0, y: -30, filter: 'blur(8px)' }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Manifesto onNext={() => goToStage(2)} onPrev={() => goToStage(0)} onOpenMenu={() => setIsMenuOpen(true)} />
+            <Manifesto 
+              onNext={() => goToStage(2)} 
+              onPrev={() => goToStage(0)} 
+              onOpenMenu={handleOpenMenu} 
+            />
           </motion.div>
         )}
 
@@ -138,7 +172,10 @@ export default function App() {
             exit={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Works onBack={() => goToStage(1)} onOpenMenu={() => setIsMenuOpen(true)} />
+            <Works 
+              onBack={() => goToStage(1)} 
+              onOpenMenu={handleOpenMenu} 
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -148,9 +185,12 @@ export default function App() {
         {[0, 1, 2].map((stg) => (
           <button
             key={stg}
-            onClick={() => goToStage(stg)}
+            onClick={() => {
+              sound.playClick();
+              goToStage(stg);
+            }}
             aria-label={`Jump to Stage ${stg + 1}`}
-            className={`w-1 rounded-full transition-all duration-500 pointer-events-auto cursor-pointer ${
+            className={`w-1 rounded-full transition-all duration-500 pointer-events-auto cursor-none ${
               currentStage === stg
                 ? 'bg-emerald-400 h-8 shadow-[0_0_8px_#34d399]'
                 : 'bg-white/20 h-4 hover:bg-white/50'
