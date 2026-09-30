@@ -3,63 +3,68 @@ import { AnimatePresence, motion } from 'framer-motion';
 import PixelLoader from './components/PixelLoader';
 import RadarCursor from './components/RadarCursor';
 import Hero from './components/Hero';
+import Manifesto from './components/Manifesto';
 import Works from './components/Works';
+import MenuOverlay from './components/MenuOverlay';
 
 export default function App() {
   const [loadingDone, setLoadingDone] = useState(false);
-  const [currentStage, setCurrentStage] = useState(0); // 0: Hero, 1: Works
+  const [currentStage, setCurrentStage] = useState(0); // 0: Hero, 1: Manifesto, 2: Works
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
   const isTransitioning = useRef(false);
 
   const goToStage = (targetStage) => {
     if (isTransitioning.current || targetStage === currentStage) return;
+    if (targetStage < 0 || targetStage > 2) return;
     isTransitioning.current = true;
     setCurrentStage(targetStage);
     setTimeout(() => {
       isTransitioning.current = false;
-    }, 1000);
+    }, 900);
   };
 
   useEffect(() => {
     // 1. Mouse Wheel Navigation
     const handleWheel = (e) => {
-      if (!loadingDone || isTransitioning.current) return;
-      const threshold = 30;
-      if (e.deltaY > threshold && currentStage < 1) {
-        goToStage(1);
+      if (!loadingDone || isTransitioning.current || isMenuOpen) return;
+      const threshold = 35;
+      if (e.deltaY > threshold && currentStage < 2) {
+        goToStage(currentStage + 1);
       } else if (e.deltaY < -threshold && currentStage > 0) {
-        goToStage(0);
+        goToStage(currentStage - 1);
       }
     };
 
-    // 2. Keyboard Arrow Keys Navigation
+    // 2. Keyboard Navigation
     const handleKeyDown = (e) => {
-      if (!loadingDone || isTransitioning.current) return;
+      if (e.key === 'Escape') {
+        setIsMenuOpen(false);
+        return;
+      }
+      if (!loadingDone || isTransitioning.current || isMenuOpen) return;
 
       if (['ArrowDown', 'PageDown', ' '].includes(e.key)) {
         e.preventDefault();
-        if (currentStage < 1) {
-          goToStage(1);
-        }
+        if (currentStage < 2) goToStage(currentStage + 1);
       } else if (['ArrowUp', 'PageUp'].includes(e.key)) {
         e.preventDefault();
-        if (currentStage > 0) {
-          goToStage(0);
-        }
+        if (currentStage > 0) goToStage(currentStage - 1);
       }
     };
 
-    // 3. Touch Gesture Navigation for Mobile
+    // 3. Touch Gestures for Mobile
     let touchStartY = 0;
     const handleTouchStart = (e) => {
       touchStartY = e.touches[0].clientY;
     };
     const handleTouchEnd = (e) => {
-      if (!loadingDone || isTransitioning.current) return;
+      if (!loadingDone || isTransitioning.current || isMenuOpen) return;
       const deltaY = touchStartY - e.changedTouches[0].clientY;
-      if (deltaY > 45 && currentStage < 1) {
-        goToStage(1);
-      } else if (deltaY < -45 && currentStage > 0) {
-        goToStage(0);
+      if (deltaY > 50 && currentStage < 2) {
+        goToStage(currentStage + 1);
+      } else if (deltaY < -50 && currentStage > 0) {
+        goToStage(currentStage - 1);
       }
     };
 
@@ -74,7 +79,7 @@ export default function App() {
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [loadingDone, currentStage]);
+  }, [loadingDone, currentStage, isMenuOpen]);
 
   return (
     <main className="fixed inset-0 h-screen h-[100dvh] w-screen bg-[#050608] text-white overflow-hidden select-none">
@@ -86,7 +91,17 @@ export default function App() {
         <PixelLoader onComplete={() => setLoadingDone(true)} />
       )}
 
-      {/* 3. Stage Navigation Deck (Fixed 100vh Transition) */}
+      {/* 3. Tactical Fullscreen Menu Overlay */}
+      <MenuOverlay
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        onSelectStage={goToStage}
+        currentStage={currentStage}
+        soundOn={soundOn}
+        setSoundOn={setSoundOn}
+      />
+
+      {/* 4. 3-Stage Navigation Deck */}
       <AnimatePresence mode="wait">
         {currentStage === 0 && (
           <motion.div
@@ -95,42 +110,53 @@ export default function App() {
             initial={{ opacity: 0, y: -20, filter: 'blur(8px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             exit={{ opacity: 0, y: -40, filter: 'blur(10px)', scale: 0.98 }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Hero onNavigate={() => goToStage(1)} />
+            <Hero onNavigate={() => goToStage(1)} onOpenMenu={() => setIsMenuOpen(true)} />
           </motion.div>
         )}
 
         {currentStage === 1 && (
+          <motion.div
+            key="stage-manifesto"
+            className="absolute inset-0 h-full w-full"
+            initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -30, filter: 'blur(8px)' }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <Manifesto onNext={() => goToStage(2)} onPrev={() => goToStage(0)} onOpenMenu={() => setIsMenuOpen(true)} />
+          </motion.div>
+        )}
+
+        {currentStage === 2 && (
           <motion.div
             key="stage-works"
             className="absolute inset-0 h-full w-full"
             initial={{ opacity: 0, y: 40, filter: 'blur(10px)', scale: 1.02 }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }}
             exit={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <Works onBack={() => goToStage(0)} />
+            <Works onBack={() => goToStage(1)} onOpenMenu={() => setIsMenuOpen(true)} />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Persistent Side Stage Indicator Pill */}
-      <div className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2 pointer-events-none">
-        <button
-          onClick={() => goToStage(0)}
-          className={`w-1 rounded-full transition-all duration-500 pointer-events-auto ${
-            currentStage === 0 ? 'bg-emerald-400 h-8 shadow-[0_0_8px_#34d399]' : 'bg-white/20 h-5 hover:bg-white/50'
-          }`}
-          aria-label="Navigate to Hero stage"
-        />
-        <button
-          onClick={() => goToStage(1)}
-          className={`w-1 rounded-full transition-all duration-500 pointer-events-auto ${
-            currentStage === 1 ? 'bg-emerald-400 h-8 shadow-[0_0_8px_#34d399]' : 'bg-white/20 h-5 hover:bg-white/50'
-          }`}
-          aria-label="Navigate to Works stage"
-        />
+      {/* Persistent 3-Stage Indicator Stepper */}
+      <div className="fixed right-3 sm:right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2.5 pointer-events-none">
+        {[0, 1, 2].map((stg) => (
+          <button
+            key={stg}
+            onClick={() => goToStage(stg)}
+            aria-label={`Jump to Stage ${stg + 1}`}
+            className={`w-1 rounded-full transition-all duration-500 pointer-events-auto cursor-pointer ${
+              currentStage === stg
+                ? 'bg-emerald-400 h-8 shadow-[0_0_8px_#34d399]'
+                : 'bg-white/20 h-4 hover:bg-white/50'
+            }`}
+          />
+        ))}
       </div>
     </main>
   );

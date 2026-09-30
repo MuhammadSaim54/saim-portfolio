@@ -12,15 +12,19 @@
   --font-mono: 'Space Mono', monospace;
 }
 
+/* Kill all default browser cursors across EVERY element, button, link and modal */
+*, *::before, *::after, html, body, button, a, input, select {
+  cursor: none !important;
+}
+
 html {
   background-color: var(--bg-void);
   color: #d1d5db;
   font-family: var(--font-mono);
-  scrollbar-width: none; /* Firefox hide scrollbar */
-  -ms-overflow-style: none; /* IE/Edge hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* Chrome, Safari and Opera hide scrollbar */
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
@@ -30,21 +34,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--bg-void);
-  cursor: none;
   user-select: none;
-}
-
-/* Lenis Recommended Root Styles */
-html.lenis, html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
 }
 
 /* Authentic CRT Interlaced Vertical Phosphor Lines */
