@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import portfolioImg from '../assets/images/portfolio.png';
+import { sound } from '../utils/soundEngine';
 
-export default function Hero({ onNavigate, onOpenMenu }) {
+export default function Hero({ onNavigate, onOpenMenu, soundOn, onToggleSound }) {
   const [pktTime, setPktTime] = useState('');
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function Hero({ onNavigate, onOpenMenu }) {
   return (
     <section className="relative h-screen h-[100dvh] w-screen bg-[#050608] text-[#c9cbcf] overflow-hidden flex flex-col justify-between p-4 sm:p-6 lg:p-10 2xl:p-16 select-none">
       
-      {/* Pure Editorial Vertical Columns (NO horizontal lines) with Crimson Ticks */}
+      {/* Editorial 5-Column Grid */}
       <div className="absolute inset-0 pointer-events-none grid grid-cols-4 sm:grid-cols-5 h-full w-full px-4 sm:px-6 lg:px-10 2xl:px-16">
         <div className="border-r border-white/[0.04] relative">
           <span className="absolute top-1/4 right-0 w-1.5 h-3 bg-rose-500 translate-x-1/2" />
@@ -42,7 +43,7 @@ export default function Hero({ onNavigate, onOpenMenu }) {
         <div className="relative" />
       </div>
 
-      {/* Top Editorial Bar (Seamless — No Horizontal Border) */}
+      {/* Top Editorial Bar */}
       <div className="relative z-20 grid grid-cols-2 sm:grid-cols-5 items-center gap-4 font-mono-tech uppercase tracking-widest text-slate-500 pb-3 sm:pb-4 flex-shrink-0 text-[10px] sm:text-xs 2xl:text-sm">
         
         {/* Col 1: Identity */}
@@ -51,15 +52,20 @@ export default function Hero({ onNavigate, onOpenMenu }) {
           <span className="font-bold tracking-[0.2em]">SAIM</span>
         </div>
 
-        {/* Col 2: Audio/Status */}
+        {/* Col 2: Audio Toggle Button */}
         <div className="hidden sm:block">
-          <span>SOUND — <span className="text-white">ON</span></span>
+          <button 
+            onClick={onToggleSound}
+            className="hover:text-emerald-400 transition-colors cursor-none uppercase"
+          >
+            SOUND — <span className={soundOn ? 'text-white font-bold' : 'text-rose-500 font-bold'}>{soundOn ? 'ON' : 'OFF'}</span>
+          </button>
         </div>
 
         {/* Col 3: Coordinates & Live Time */}
         <div className="hidden sm:block">
           <div>LAHORE, PK</div>
-          <div className="text-white">{pktTime || '11:24'} PKT</div>
+          <div className="text-white">{pktTime || '11:40'} PKT</div>
         </div>
 
         {/* Col 4: Lat/Long Geolocation */}
@@ -79,12 +85,9 @@ export default function Hero({ onNavigate, onOpenMenu }) {
         </div>
       </div>
 
-      {/* Main Center Editorial Stage */}
+      {/* Center Stage */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 2xl:gap-20 items-center my-auto flex-1 min-h-0 w-full py-2">
-        
-        {/* Left Editorial Philosophy */}
         <div className="lg:col-span-5 space-y-4 sm:space-y-6 2xl:space-y-10 z-20">
-          
           <div className="space-y-1.5 font-mono-tech text-slate-400 leading-relaxed max-w-sm 2xl:max-w-lg text-[11px] sm:text-xs 2xl:text-base">
             <div className="text-[10px] 2xl:text-xs text-slate-500 uppercase tracking-widest pb-0.5">
               // CRAFT &amp; PHILOSOPHY
@@ -111,27 +114,19 @@ export default function Hero({ onNavigate, onOpenMenu }) {
               </motion.div>
             </div>
           </div>
-
         </div>
 
         {/* Center Anonymous Silhouette */}
         <div className="lg:col-span-4 relative flex items-center justify-center h-full max-h-[46vh] sm:max-h-[58vh] lg:max-h-[70vh] 2xl:max-h-[78vh] min-h-0">
           <div className="relative h-full w-auto aspect-[3/4] flex items-center justify-center overflow-visible">
-            
             <img 
               src={portfolioImg} 
               alt="Anonymous Developer"
               className="w-full h-full object-cover object-top mix-blend-luminosity brightness-95 chromatic-glitch select-none"
             />
-
-            {/* CRT Matrix Lines */}
             <div className="absolute inset-0 crt-matrix pointer-events-none opacity-60" />
-
-            {/* Natural Radial Void Fade */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_transparent_50%,_#050608_100%)] pointer-events-none" />
             <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#050608] to-transparent pointer-events-none" />
-
-            {/* Year Stamp */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 font-display tracking-widest text-white/90 select-none text-2xl 2xl:text-4xl">
               '26
             </div>
@@ -146,7 +141,10 @@ export default function Hero({ onNavigate, onOpenMenu }) {
           </div>
 
           <div 
-            onClick={onNavigate}
+            onClick={() => {
+              sound.playClick();
+              onNavigate();
+            }}
             className="flex flex-col items-center gap-4 cursor-none group"
           >
             <span className="[writing-mode:vertical-rl] text-slate-400 group-hover:text-emerald-400 transition-colors tracking-[0.3em]">
@@ -155,19 +153,18 @@ export default function Hero({ onNavigate, onOpenMenu }) {
             <span className="w-1.5 h-6 2xl:h-9 bg-gradient-to-b from-emerald-400 to-transparent animate-pulse group-hover:scale-110 transition-transform" />
           </div>
         </div>
-
       </div>
 
-      {/* Bottom Status Bar (Seamless — No Horizontal Border) */}
+      {/* Bottom Status Bar */}
       <div className="relative z-20 grid grid-cols-2 sm:grid-cols-4 items-center gap-3 font-mono-tech uppercase text-slate-500 pt-3 sm:pt-4 flex-shrink-0 text-[9px] sm:text-[10px] 2xl:text-xs">
         <div className="truncate">
-          <span className="text-slate-400">SPEC: </span>REACT 19 • VITE • LENIS
+          <span className="text-slate-400">SPEC: </span>REACT 19 • VITE • AUDIO ENGINE
         </div>
         <div className="hidden sm:block text-center">
           <span className="text-emerald-400">● </span>AVAILABLE FOR CONTRACTS
         </div>
         <div className="hidden sm:block text-right">
-          LATENCY: &lt;12MS
+          LATENCY: &lt;10MS
         </div>
         <div className="text-right text-slate-400">
           © 2026 SAIM

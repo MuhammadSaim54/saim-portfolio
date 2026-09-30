@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, ArrowRight, CornerDownLeft } from 'lucide-react';
+import { sound } from '../utils/soundEngine';
 
 const AXIOMS = [
   {
@@ -76,9 +77,15 @@ export default function Manifesto({ onNext, onPrev, onOpenMenu }) {
 
   const current = AXIOMS[activeQuote];
 
+  const handleSelectQuote = (idx) => {
+    sound.playClick();
+    setActiveQuote(idx);
+  };
+
   return (
     <section className="relative h-screen h-[100dvh] w-screen bg-[#050608] text-[#c9cbcf] overflow-hidden flex flex-col justify-between p-4 sm:p-6 lg:p-10 2xl:p-16 select-none">
       
+      {/* Editorial Vertical Columns */}
       <div className="absolute inset-0 pointer-events-none grid grid-cols-4 sm:grid-cols-5 h-full w-full px-4 sm:px-6 lg:px-10 2xl:px-16">
         <div className="border-r border-white/[0.04] relative">
           <span className="absolute top-1/4 right-0 w-1.5 h-3 bg-rose-500 translate-x-1/2" />
@@ -95,14 +102,19 @@ export default function Manifesto({ onNext, onPrev, onOpenMenu }) {
         <div className="relative" />
       </div>
 
+      {/* Atmospheric Watermark in Background */}
       <div className="absolute left-4 lg:left-12 bottom-12 pointer-events-none font-display text-[26vw] sm:text-[20vw] leading-none text-white/[0.015] font-black z-0 select-none">
         0{activeQuote + 1}
       </div>
 
+      {/* Top Editorial Bar */}
       <div className="relative z-20 grid grid-cols-2 sm:grid-cols-5 items-center gap-4 font-mono-tech uppercase tracking-widest text-slate-500 pb-3 sm:pb-4 flex-shrink-0 text-[10px] sm:text-xs 2xl:text-sm">
         <div className="flex items-center gap-2 text-white">
           <button 
-            onClick={onPrev}
+            onClick={() => {
+              sound.playClick();
+              onPrev();
+            }}
             className="flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 transition-colors cursor-none"
           >
             <CornerDownLeft className="w-3.5 h-3.5" />
@@ -116,7 +128,7 @@ export default function Manifesto({ onNext, onPrev, onOpenMenu }) {
 
         <div className="hidden sm:block">
           <div>LAHORE, PK</div>
-          <div className="text-white">{pktTime || '11:26'} PKT</div>
+          <div className="text-white">{pktTime || '11:45'} PKT</div>
         </div>
 
         <div className="hidden sm:block text-slate-500">
@@ -126,7 +138,10 @@ export default function Manifesto({ onNext, onPrev, onOpenMenu }) {
 
         <div className="flex justify-end items-center gap-3">
           <button
-            onClick={onNext}
+            onClick={() => {
+              sound.playClick();
+              onNext();
+            }}
             className="hidden sm:flex items-center gap-1.5 px-3 py-1 border border-emerald-400/40 text-emerald-400 hover:bg-emerald-400 hover:text-black transition-all cursor-none text-[10px] 2xl:text-xs font-bold"
           >
             <span>NEXT: WORKS</span>
@@ -142,6 +157,7 @@ export default function Manifesto({ onNext, onPrev, onOpenMenu }) {
         </div>
       </div>
 
+      {/* Main Center Stage: Fluid Editorial Layout */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 2xl:gap-20 items-center my-auto flex-1 min-h-0 w-full py-2">
         <div className="lg:col-span-8 space-y-6 sm:space-y-8 2xl:space-y-12">
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
@@ -199,7 +215,7 @@ export default function Manifesto({ onNext, onPrev, onOpenMenu }) {
           {AXIOMS.map((axiom, idx) => (
             <button
               key={axiom.index}
-              onClick={() => setActiveQuote(idx)}
+              onClick={() => handleSelectQuote(idx)}
               className={`text-left p-4 sm:p-5 2xl:p-6 border transition-all duration-300 cursor-none group relative overflow-hidden ${
                 activeQuote === idx
                   ? 'border-white/35 bg-white/[0.04] shadow-[0_0_30px_rgba(255,255,255,0.03)]'
@@ -254,6 +270,7 @@ export default function Manifesto({ onNext, onPrev, onOpenMenu }) {
         </div>
       </div>
 
+      {/* Bottom Status Bar */}
       <div className="relative z-20 grid grid-cols-2 sm:grid-cols-4 items-center gap-3 font-mono-tech uppercase text-slate-500 pt-3 sm:pt-4 flex-shrink-0 text-[9px] sm:text-[10px] 2xl:text-xs">
         <div>
           <span className="text-slate-400">STAGE: </span>02 // MANIFESTO
