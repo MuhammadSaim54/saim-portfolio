@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import portfolioImg from '../assets/images/portfolio.png';
 
-export default function Hero() {
+export default function Hero({ onNavigate, onOpenMenu }) {
   const [pktTime, setPktTime] = useState('');
 
   useEffect(() => {
@@ -23,10 +23,10 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative h-screen h-[100dvh] w-screen bg-[#050608] text-[#c9cbcf] overflow-hidden flex flex-col justify-between p-4 sm:p-6 lg:p-8 2xl:p-12 select-none">
+    <section className="relative h-screen h-[100dvh] w-screen bg-[#050608] text-[#c9cbcf] overflow-hidden flex flex-col justify-between p-4 sm:p-6 lg:p-10 2xl:p-16 select-none">
       
-      {/* Editorial Grid Lines with Red Markers */}
-      <div className="absolute inset-0 pointer-events-none grid grid-cols-4 sm:grid-cols-5 h-full w-full px-4 sm:px-6 lg:px-8 2xl:px-12">
+      {/* Pure Editorial Vertical Columns (NO horizontal lines) with Crimson Ticks */}
+      <div className="absolute inset-0 pointer-events-none grid grid-cols-4 sm:grid-cols-5 h-full w-full px-4 sm:px-6 lg:px-10 2xl:px-16">
         <div className="border-r border-white/[0.04] relative">
           <span className="absolute top-1/4 right-0 w-1.5 h-3 bg-rose-500 translate-x-1/2" />
         </div>
@@ -42,8 +42,8 @@ export default function Hero() {
         <div className="relative" />
       </div>
 
-      {/* Top Editorial Bar */}
-      <div className="relative z-20 grid grid-cols-2 sm:grid-cols-5 items-center gap-4 font-mono-tech uppercase tracking-widest text-slate-500 border-b border-white/[0.06] pb-3 sm:pb-4 flex-shrink-0 text-[10px] sm:text-xs 2xl:text-sm">
+      {/* Top Editorial Bar (Seamless — No Horizontal Border) */}
+      <div className="relative z-20 grid grid-cols-2 sm:grid-cols-5 items-center gap-4 font-mono-tech uppercase tracking-widest text-slate-500 pb-3 sm:pb-4 flex-shrink-0 text-[10px] sm:text-xs 2xl:text-sm">
         
         {/* Col 1: Identity */}
         <div className="flex items-center gap-2 text-white">
@@ -59,7 +59,7 @@ export default function Hero() {
         {/* Col 3: Coordinates & Live Time */}
         <div className="hidden sm:block">
           <div>LAHORE, PK</div>
-          <div className="text-white">{pktTime || '09:43'} PKT</div>
+          <div className="text-white">{pktTime || '11:24'} PKT</div>
         </div>
 
         {/* Col 4: Lat/Long Geolocation */}
@@ -70,19 +70,22 @@ export default function Hero() {
 
         {/* Col 5: Menu Toggle */}
         <div className="flex justify-end">
-          <button className="px-2.5 py-1 2xl:px-4 2xl:py-1.5 border border-white/20 text-white hover:border-emerald-400 hover:text-emerald-400 transition-colors cursor-pointer text-[10px] 2xl:text-xs">
+          <button 
+            onClick={onOpenMenu}
+            className="px-2.5 py-1 2xl:px-4 2xl:py-1.5 border border-white/20 text-white hover:border-emerald-400 hover:text-emerald-400 transition-colors cursor-none text-[10px] 2xl:text-xs"
+          >
             [ MENU ]
           </button>
         </div>
       </div>
 
       {/* Main Center Editorial Stage */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 2xl:gap-14 items-center my-auto flex-1 min-h-0 w-full">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 2xl:gap-20 items-center my-auto flex-1 min-h-0 w-full py-2">
         
         {/* Left Editorial Philosophy */}
-        <div className="lg:col-span-5 space-y-3 sm:space-y-6 2xl:space-y-8 z-20">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-6 2xl:space-y-10 z-20">
           
-          <div className="space-y-1.5 font-mono-tech text-slate-400 leading-relaxed max-w-sm 2xl:max-w-md text-[11px] sm:text-xs 2xl:text-base">
+          <div className="space-y-1.5 font-mono-tech text-slate-400 leading-relaxed max-w-sm 2xl:max-w-lg text-[11px] sm:text-xs 2xl:text-base">
             <div className="text-[10px] 2xl:text-xs text-slate-500 uppercase tracking-widest pb-0.5">
               // CRAFT &amp; PHILOSOPHY
             </div>
@@ -98,7 +101,7 @@ export default function Hero() {
               FRONT-END DEVELOPER
             </div>
             
-            <div className="font-display tracking-tight text-white leading-[0.82] select-none text-[20vw] sm:text-[14vw] lg:text-[10vw] 2xl:text-[10.5vw]">
+            <div className="font-display tracking-tight text-white leading-[0.82] select-none text-[20vw] sm:text-[14vw] lg:text-[10vw] 2xl:text-[11vw]">
               <motion.div 
                 initial={{ y: 35, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -111,7 +114,7 @@ export default function Hero() {
 
         </div>
 
-        {/* Center Anonymous Silhouette: Smooth Glitch & Vignette Blend */}
+        {/* Center Anonymous Silhouette */}
         <div className="lg:col-span-4 relative flex items-center justify-center h-full max-h-[46vh] sm:max-h-[58vh] lg:max-h-[70vh] 2xl:max-h-[78vh] min-h-0">
           <div className="relative h-full w-auto aspect-[3/4] flex items-center justify-center overflow-visible">
             
@@ -142,18 +145,21 @@ export default function Hero() {
             <div>FLAGSHIP REPO</div>
           </div>
 
-          <div className="flex flex-col items-center gap-4">
-            <span className="[writing-mode:vertical-rl] text-slate-400 tracking-[0.3em]">
+          <div 
+            onClick={onNavigate}
+            className="flex flex-col items-center gap-4 cursor-none group"
+          >
+            <span className="[writing-mode:vertical-rl] text-slate-400 group-hover:text-emerald-400 transition-colors tracking-[0.3em]">
               SCROLL DOWN
             </span>
-            <span className="w-1.5 h-6 2xl:h-9 bg-gradient-to-b from-emerald-400 to-transparent animate-pulse" />
+            <span className="w-1.5 h-6 2xl:h-9 bg-gradient-to-b from-emerald-400 to-transparent animate-pulse group-hover:scale-110 transition-transform" />
           </div>
         </div>
 
       </div>
 
-      {/* Bottom Status Bar */}
-      <div className="relative z-20 grid grid-cols-2 sm:grid-cols-4 items-center gap-3 font-mono-tech uppercase text-slate-500 border-t border-white/[0.06] pt-3 flex-shrink-0 text-[9px] sm:text-[10px] 2xl:text-xs">
+      {/* Bottom Status Bar (Seamless — No Horizontal Border) */}
+      <div className="relative z-20 grid grid-cols-2 sm:grid-cols-4 items-center gap-3 font-mono-tech uppercase text-slate-500 pt-3 sm:pt-4 flex-shrink-0 text-[9px] sm:text-[10px] 2xl:text-xs">
         <div className="truncate">
           <span className="text-slate-400">SPEC: </span>REACT 19 • VITE • LENIS
         </div>
